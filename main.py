@@ -9,13 +9,13 @@ from record import record
 from detect import detect,strip_optimizer
 
 from pygame.locals import *
-
+import pyaudio
 import argparse
 import time
 from pathlib import Path
 
 import cv2
-import torch
+
 import torch.backends.cudnn as cudnn
 from numpy import random
 
@@ -31,7 +31,8 @@ import warnings
 
 import pygame
 import time
-
+# import os
+# os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
 
 
@@ -155,7 +156,23 @@ def predict(model, sentence,vision):
     if (vision == "11"):
         vision_tensor = torch.tensor([1, 1])
     vision_tensor = vision_tensor.unsqueeze(0).to('cpu')
-
+    if sentence[0].find("左")!=-1:
+        if(vision == "00" or vision == "01"):
+            return 1;
+        else:
+            return 0;
+    elif sentence[0].find("右")!=-1:
+        if (vision == "00" or vision == "10"):
+            return 1;
+        else:
+            return 0;
+    elif sentence[0].find("灯")!=-1 or sentence[0].find("燈")!=-1:
+        if(vision == "00"):
+            return 1;
+        else:
+            return 0;
+    else:
+        return 4
 
 
     # 确保不会计算梯度
@@ -325,7 +342,8 @@ if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
-    pygame.mixer.music.load('未知操作.wav')
+
+    pygame.mixer.music.load('操作成功.wav')
 
     # 加载背景图像
     background_image_path = "road.png"  # 背景图像文件路径
@@ -419,13 +437,19 @@ if __name__ == '__main__':
                         act = 0  # 非法
                     if act==1:
                         original_car.move_left()
+                        pygame.mixer.music.play(1, 0.0)
                     elif act==2:
                         original_car.move_right()
+                        pygame.mixer.music.play(1, 0.0)
                     elif act==0:
+                        pygame.mixer.music.load('危险操作.wav')
                         pygame.mixer.music.play(1, 0.0)
                         top_image_path = "runs/detect/exp/9dbae68c4566.png"  # 顶部图片的文件路径
                         top_image = pygame.image.load(top_image_path)
                         top_image = pygame.transform.scale(top_image, (target_width, target_height))
+                    else:
+                        pygame.mixer.music.load('未知操作.wav')
+                        pygame.mixer.music.play(1, 0.0)
 
 
 
