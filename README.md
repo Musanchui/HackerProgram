@@ -18,6 +18,8 @@ ffmpeg
 Whisper
 Pyaudiio
 pygame
+sentence-transformers
+sympy
 
 # logging -------------------------------------
 tensorboard>=2.4.1
