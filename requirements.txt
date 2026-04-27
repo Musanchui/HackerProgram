@@ -17,7 +17,7 @@ openai-whisper
 sympy
 
 # logging -------------------------------------
-tensorboard>=2.4.1
+tensorboard>=2.20.0
 # wandb
 
 # plotting ------------------------------------
